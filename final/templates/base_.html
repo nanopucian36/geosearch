@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+{% load static %}
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="Cache-Control" content="no-cache">
+
+    <title>{% block title %}{% endblock %}</title>
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/one-page-wonder.min.css' %}" rel="stylesheet">
+    <!-- My style -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/mystyle.css' %}">
+
+    {% block link %}{% endblock %}
+    {% block head %}{% endblock %}
+    </head>
+
+    <body>
+        <div id="wrapper">
+            <!-- {% block header%}{% endblock %} -->
+            {% block contents%}{% endblock %}
+            <!-- {% block body %}
+            {% endblock %} -->
+
+            <!-- Footer -->
+            <footer class="py-5 bg-black">
+                <div class="container">
+                <p class="m-0 text-center text-white small">&copy; MetaSearch developed by Takuma Nitta 2021</p>
+                </div>
+                <!-- /.container -->
+            </footer>
+
+            <!-- Bootstrap core JavaScript -->
+            <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+            <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+            {% block script %}{% endblock %}
+        </div>
+    </body>
+</html>

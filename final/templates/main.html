@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}グラフィックレコード{% endblock %}
+{% block link%}
+  <!-- style sheet -->
+  <link rel="stylesheet" href="../static/css/style.css">
+  <!-- Jquery & Jquery UI -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" ></script>
+  <!-- <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"> -->
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
+{% endblock  %}
+{% block header%}
+  <div class="card text-center">
+    <div class="card-header bg-danger">
+      <ul class="nav nav-pills card-header-pills">
+        <li class="nav-item">
+          <a class="nav-link btn-dark" href="/">Top</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link btn-dark" href="/uploader">Back</a>
+        </li>
+        <li>
+          {% comment %} <a href="" id="ss" download="DiscusShow.png" class="btn btn-primary btn-xl rounded-pill mt-5">スクリーンショットをダウンロード</a> {% endcomment %}
+          <a href="" id="ss" download="DiscusShow.png" class="nav-link btn-dark">Caputure</a>
+        </li>
+        <hr>
+        <li>
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" name="update" value="UPDATE_FILE" onclick="reload()" class="btn btn-dark btn-xl rounded-pill mt-5">
+            {% comment %} <input type="submit" name="update" value="UPDATE" onclick="reload()" class="nav-link active"> {% endcomment %}
+            <script>
+              var player = document.getElementById('player');
+              var handleSuccess = function(stream) {
+                if (window.URL) {
+                  console.log(stream)
+                  player.src = window.URL.createObjectURL(stream);
+                } else {
+                  player.src = stream;
+                }
+              };
+              navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+                  .then(handleSuccess)
+            </script>
+            <script>
+              var handleSuccess = function(stream) {
+                var context = new AudioContext();
+                var input = context.createMediaStreamSource(stream)
+                var processor = context.createScriptProcessor(1024,1,1);
+                source.connect(processor);
+                processor.connect(context.destination);
+                processor.onaudioprocess = function(e){
+                  // Do something with the data, i.e Convert this to WAV
+                  console.log(e.inputBuffer);
+                };
+              };
+              navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+                  .then(handleSuccess)
+            </script>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}
+{% block contents %}
+  {% comment %} <input type="button" value="UPDATE" onclick="reload()" class="btn btn-dark blueHour"> {% endcomment %}
+  <div id="wrapper_main" class="box21">
+    <div class="">
+    </div>
+  </div>
+  <img src="" id="result" hidden/>
+{% endblock %}
+{% block script%}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+  <script>
+    //ロードされた際の処理として実施：
+    function create_image(){
+      //HTML内に画像を表示
+      html2canvas(document.body,{
+        onrendered: function(canvas){
+          //imgタグのsrcの中に、html2canvasがレンダリングした画像を指定する。
+          var imgData = canvas.toDataURL();
+          document.getElementById("result").src = imgData;
+        }
+      });
+      //ボタンを押下した際にダウンロードする画像を作る
+      html2canvas(document.body,{
+        onrendered: function(canvas){
+          //aタグのhrefにキャプチャ画像のURLを設定
+          var imgData = canvas.toDataURL();
+          document.getElementById("ss").href = imgData;
+        }
+      });
+    }
+  </script>
+  <script src="../static/js/jquery.tiny-draggable.js"></script>
+  <script src="../static/js/jquery.tiny-draggable.min.js"></script>
+  <script src="../static/js/script.js"></script>
+{% endblock %}
